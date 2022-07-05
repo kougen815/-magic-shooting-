@@ -16,13 +16,13 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define TEXTURE_WIDTH_ENEMY				(96)	// キャラサイズ
-#define TEXTURE_HEIGHT_ENEMY			(64)	// 
-#define TEXTURE_MAX						(2)		// テクスチャの数
+#define TEXTURE_WIDTH_ENEMY				(96)																// キャラサイズ
+#define TEXTURE_HEIGHT_ENEMY			(64)																// 
+#define TEXTURE_MAX						(2)																	// テクスチャの数
 
-#define TEXTURE_PATTERN_DIVIDE_X_ENEMY	(8)		// アニメパターンのテクスチャ内分割数（X)
-#define TEXTURE_PATTERN_DIVIDE_Y_ENEMY	(1)		// アニメパターンのテクスチャ内分割数（Y)
-#define ANIM_PATTERN_NUM_ENEMY			(TEXTURE_PATTERN_DIVIDE_X_ENEMY*TEXTURE_PATTERN_DIVIDE_Y_ENEMY)	// アニメーションパターン数
+#define TEXTURE_PATTERN_DIVIDE_X_ENEMY	(8)																	// アニメパターンのテクスチャ内分割数（X)
+#define TEXTURE_PATTERN_DIVIDE_Y_ENEMY	(1)																	// アニメパターンのテクスチャ内分割数（Y)
+#define ANIM_PATTERN_NUM_ENEMY			(TEXTURE_PATTERN_DIVIDE_X_ENEMY*TEXTURE_PATTERN_DIVIDE_Y_ENEMY)		// アニメーションパターン数
 #define ANIM_WAIT_ENEMY					(6)		// アニメーションの切り替わるWait値
 
 
@@ -35,8 +35,8 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static ID3D11Buffer				*g_VertexBuffer = NULL;		// 頂点情報
-static ID3D11ShaderResourceView	*g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
+static ID3D11Buffer				*g_VertexBuffer = NULL;					// 頂点情報
+static ID3D11ShaderResourceView	*g_Texture[TEXTURE_MAX] = { NULL };		// テクスチャ情報
 
 static char *g_TexturName[TEXTURE_MAX] = {
 	"data/TEXTURE/enemy/walk-Sheet_left.png",
@@ -317,8 +317,8 @@ void DrawEnemy(void)
 			//エネミーの位置やテクスチャー座標を反映
 			float px = g_Enemy[i].pos.x - map->pos.x;	// エネミーの表示位置X
 			float py = g_Enemy[i].pos.y - map->pos.y;	// エネミーの表示位置Y
-			float pw = g_Enemy[i].w;		// エネミーの表示幅
-			float ph = g_Enemy[i].h;		// エネミーの表示高さ
+			float pw = g_Enemy[i].w;					// エネミーの表示幅
+			float ph = g_Enemy[i].h;					// エネミーの表示高さ
 
 			// アニメーション用
 			float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X_ENEMY;	// テクスチャの幅
