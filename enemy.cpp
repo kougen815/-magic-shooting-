@@ -39,8 +39,8 @@ static ID3D11Buffer				*g_VertexBuffer = NULL;					// 頂点情報
 static ID3D11ShaderResourceView	*g_Texture[TEXTURE_MAX] = { NULL };		// テクスチャ情報
 
 static char *g_TexturName[TEXTURE_MAX] = {
-	"data/TEXTURE/enemy/walk-Sheet_left.png",
-	"data/TEXTURE/enemy/walk-Sheet_right.png",
+	"data/TEXTURE/enemy/show-Sheet.png",
+	"data/TEXTURE/enemy/walk-Sheet.png",
 };
 
 
@@ -89,7 +89,7 @@ HRESULT InitEnemy(void)
 		g_Enemy[i].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_Enemy[i].w   = TEXTURE_WIDTH_ENEMY;
 		g_Enemy[i].h   = TEXTURE_HEIGHT_ENEMY;
-		g_Enemy[i].texNo = 0;
+		g_Enemy[i].texNo = ENEMY_SNAIL_TEXTURE_SHOW;
 		g_Enemy[i].dir = DIR_LEFT;
 		g_Enemy[i].mapChipListNum = 0;
 
@@ -321,10 +321,10 @@ void DrawEnemy(void)
 			float ph = g_Enemy[i].h;					// エネミーの表示高さ
 
 			// アニメーション用
-			float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X_ENEMY;	// テクスチャの幅
-			float th = 1.0f / TEXTURE_PATTERN_DIVIDE_Y_ENEMY;	// テクスチャの高さ
-			float tx = (float)(g_Enemy[i].patternAnim % TEXTURE_PATTERN_DIVIDE_X_ENEMY) * tw;	// テクスチャの左上X座標
-			float ty = (float)(g_Enemy[i].patternAnim / TEXTURE_PATTERN_DIVIDE_X_ENEMY) * th;	// テクスチャの左上Y座標
+			float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X_ENEMY * g_Enemy[i].dir;	// テクスチャの幅
+			float th = 1.0f / TEXTURE_PATTERN_DIVIDE_Y_ENEMY;					// テクスチャの高さ
+			float tx = (float)(g_Enemy[i].patternAnim % TEXTURE_PATTERN_DIVIDE_X_ENEMY) * tw * g_Enemy[i].dir;	// テクスチャの左上X座標
+			float ty = (float)(g_Enemy[i].patternAnim / TEXTURE_PATTERN_DIVIDE_X_ENEMY) * th;					// テクスチャの左上Y座標
 
 			// １枚のポリゴンの頂点とテクスチャ座標を設定
 			SetSpriteColorRotation(g_VertexBuffer, px, py, pw, ph, tx, ty, tw, th,
