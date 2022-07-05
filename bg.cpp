@@ -147,14 +147,14 @@ void UpdateBG(void)
 		{
 			if (player->keyOn == TRUE)
 			{
-				if (player->dir == DIR_RIGHT)			// 右向き移動
+				if (player->dir == DIR_PLAYER_RIGHT)			// 右向き移動
 				{
 					g_Bg[0].pos.x -= speed;
 					g_Bg[1].pos.x -= speed - 1.0f;
 					g_Bg[2].pos.x -= speed - 2.0f;
 					g_Bg[3].pos.x -= speed - 3.0f;
 				}
-				else if (player->dir == DIR_LEFT)		// 左向き移動
+				else if (player->dir == DIR_PLAYER_LEFT)		// 左向き移動
 				{
 					g_Bg[0].pos.x += speed;
 					g_Bg[1].pos.x += speed - 1.0f;
@@ -164,14 +164,14 @@ void UpdateBG(void)
 			}
 			else if (player->isTakeDamage == TRUE)	// ダメージを受けるとの強制後退(BGの移動は逆になる)
 			{
-				if (player->dir == DIR_RIGHT)			// 右向き移動
+				if (player->dir == DIR_PLAYER_RIGHT)			// 右向き移動
 				{
 					g_Bg[0].pos.x += speed;
 					g_Bg[1].pos.x += speed - 1.0f;
 					g_Bg[2].pos.x += speed - 2.0f;
 					g_Bg[3].pos.x += speed - 3.0f;
 				}
-				else if (player->dir == DIR_LEFT)		// 左向き移動
+				else if (player->dir == DIR_PLAYER_LEFT)		// 左向き移動
 				{
 					g_Bg[0].pos.x -= speed;
 					g_Bg[1].pos.x -= speed - 1.0f;

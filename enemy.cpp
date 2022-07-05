@@ -90,7 +90,7 @@ HRESULT InitEnemy(void)
 		g_Enemy[i].w   = TEXTURE_WIDTH_ENEMY;
 		g_Enemy[i].h   = TEXTURE_HEIGHT_ENEMY;
 		g_Enemy[i].texNo = ENEMY_SNAIL_TEXTURE_SHOW;
-		g_Enemy[i].dir = DIR_LEFT;
+		g_Enemy[i].dir = DIR_ENEMY_LEFT;
 		g_Enemy[i].mapChipListNum = 0;
 
 		g_Enemy[i].countAnim = 0;

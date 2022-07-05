@@ -42,8 +42,7 @@ static ID3D11Buffer				*g_VertexBuffer = NULL;				// 頂点情報
 static ID3D11ShaderResourceView	*g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 
 static char *g_TexturName[] = {
-	"data/TEXTURE/bullet/fireball_right.png",
-	"data/TEXTURE/bullet/fireball_left.png",
+	"data/TEXTURE/bullet/fireball.png",
 };
 
 static BOOL	  g_Load = FALSE;		// 初期化を行ったかのフラグ
@@ -98,7 +97,7 @@ HRESULT InitBullet(void)
 
 		// 移動の初期化
 		g_Bullet[i].move = D3DXVECTOR3(BULLET_SPEED, 0.0f, 0.0f);	// 移動量を初期化
-		g_Bullet[i].dir = DIR_RIGHT;
+		g_Bullet[i].dir = DIR_BULLET_RIGHT;
 	}
 	
 	g_Load = TRUE;
@@ -152,15 +151,15 @@ void UpdateBullet(void)
 			}
 
 			// バレットの移動処理
-			if (g_Bullet[i].dir == DIR_RIGHT)
+			if (g_Bullet[i].dir == DIR_BULLET_RIGHT)
 			{
 				g_Bullet[i].pos += g_Bullet[i].move;
-				g_Bullet[i].texNo = 0;
+				//g_Bullet[i].texNo = 0;
 			}
-			else if (g_Bullet[i].dir == DIR_LEFT)
+			else if (g_Bullet[i].dir == DIR_BULLET_LEFT)
 			{
 				g_Bullet[i].pos -= g_Bullet[i].move;
-				g_Bullet[i].texNo = 1;
+				//g_Bullet[i].texNo = 1;
 			}
 
 			// 画面外まで進みの判定、画面外でも進む、でも地図の外へ出るとなくなる。
@@ -254,9 +253,9 @@ void DrawBullet(void)
 			float pw = g_Bullet[i].w;		// バレットの表示幅
 			float ph = g_Bullet[i].h;		// バレットの表示高さ
 
-			float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X;	// テクスチャの幅
+			float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X * g_Bullet[i].dir;	// テクスチャの幅
 			float th = 1.0f / TEXTURE_PATTERN_DIVIDE_Y;	// テクスチャの高さ
-			float tx = (float)(g_Bullet[i].patternAnim % TEXTURE_PATTERN_DIVIDE_X) * tw;	// テクスチャの左上X座標
+			float tx = (float)(g_Bullet[i].patternAnim % TEXTURE_PATTERN_DIVIDE_X) * tw * g_Bullet[i].dir;	// テクスチャの左上X座標
 			float ty = (float)(g_Bullet[i].patternAnim / TEXTURE_PATTERN_DIVIDE_X) * th;	// テクスチャの左上Y座標
 
 			// １枚のポリゴンの頂点とテクスチャ座標を設定

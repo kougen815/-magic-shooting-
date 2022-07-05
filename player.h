@@ -22,8 +22,8 @@
 
 enum
 {
-	DIR_RIGHT = 1,
-	DIR_LEFT = -1,
+	DIR_PLAYER_RIGHT =  1,
+	DIR_PLAYER_LEFT  = -1,
 };
 
 

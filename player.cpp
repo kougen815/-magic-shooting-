@@ -120,7 +120,7 @@ HRESULT InitPlayer(void)
 
 		// 移動の初期化
 		g_Player[i].move	= D3DXVECTOR3(4.0f, 0.0f, 0.0f);		// 移動量
-		g_Player[i].dir		= DIR_RIGHT;							// 初期化は右向き
+		g_Player[i].dir		= DIR_PLAYER_RIGHT;							// 初期化は右向き
 		g_Player[i].keyOn			= FALSE;						// Key押されているかフラグ(BGの動き)
 		g_Player[i].isTakeDamage	= FALSE;
 		g_Player[i].canBGmove		= FALSE;
@@ -291,7 +291,7 @@ void UpdatePlayer(void)
 				g_Player[i].keyOn = FALSE;
 				
 
-				if (g_Player[i].dir == DIR_RIGHT)
+				if (g_Player[i].dir == DIR_PLAYER_RIGHT)
 				{
 					g_Player[i].pos.x -= g_Player[i].move.x;
 				}
@@ -304,7 +304,7 @@ void UpdatePlayer(void)
 			// ラッシュ
 			if (g_Player[i].isRush == TRUE)
 			{
-				if (g_Player[i].dir == DIR_RIGHT)
+				if (g_Player[i].dir == DIR_PLAYER_RIGHT)
 				{
 					g_Player[i].pos.x += g_Player[i].move.x * 5.0f;
 					g_Player[i].canBGmove = TRUE;
@@ -369,7 +369,7 @@ void UpdatePlayer(void)
 						
 						g_Player[i].pos.x += speed;
 						g_Player[i].keyOn = TRUE;
-						g_Player[i].dir = DIR_RIGHT;
+						g_Player[i].dir = DIR_PLAYER_RIGHT;
 						g_Player[i].texNo = PLAYER_TEXTURE_RUN;
 						g_Player[i].isFlying = FALSE;
 						g_Player[i].canBGmove = TRUE;
@@ -379,7 +379,7 @@ void UpdatePlayer(void)
 					{
 						g_Player[i].pos.x -= speed;
 						g_Player[i].keyOn = TRUE;
-						g_Player[i].dir = DIR_LEFT;
+						g_Player[i].dir = DIR_PLAYER_LEFT;
 						g_Player[i].texNo = PLAYER_TEXTURE_RUN;
 						g_Player[i].isFlying = FALSE;
 						g_Player[i].canBGmove = TRUE;
@@ -403,15 +403,15 @@ void UpdatePlayer(void)
 						{
 							g_Player[i].mp -= 1;
 							D3DXVECTOR3 pos = g_Player[i].pos;
-							if (g_Player[i].dir == DIR_RIGHT)
+							if (g_Player[i].dir == DIR_PLAYER_RIGHT)
 							{
 								pos.x = g_Player[i].pos.x + 20;
-								SetBullet(pos, DIR_RIGHT);		// １発目
+								SetBullet(pos, DIR_PLAYER_RIGHT);		// １発目
 							}
-							if (g_Player[i].dir == DIR_LEFT)
+							if (g_Player[i].dir == DIR_PLAYER_LEFT)
 							{
 								pos.x = g_Player[i].pos.x - 20;
-								SetBullet(pos, DIR_LEFT);		// １発目
+								SetBullet(pos, DIR_PLAYER_LEFT);		// １発目
 							}
 						}
 						

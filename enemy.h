@@ -16,6 +16,12 @@
 
 enum
 {
+	DIR_ENEMY_LEFT  =  1,
+	DIR_ENEMY_RIGHT = -1,
+};
+
+enum
+{
 	ENEMY_SNAIL_TEXTURE_SHOW,
 	ENEMY_SNAIL_TEXTURE_WALK,
 };

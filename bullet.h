@@ -15,6 +15,11 @@
 #define BULLET_MAX		(10)			// バレットのMax数
 #define BULLET_SPEED	(10.0f)			// バレットの移動スピード
 
+enum
+{
+	DIR_BULLET_RIGHT =  1,
+	DIR_BULLET_LEFT  = -1,
+};
 
 
 //*****************************************************************************
