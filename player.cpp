@@ -45,8 +45,8 @@
 #define ANIM_DAMAGE_CYCLE				(3)																	// アニメーションの繰り返しの回数
 
 // プレイヤーの画面内配置座標
-#define PLAYER_DISP_X				(SCREEN_WIDTH /2)
-#define PLAYER_DISP_Y				(SCREEN_HEIGHT/2 + TEXTURE_HEIGHT_PLAYER)
+#define PLAYER_DISP_X					(SCREEN_WIDTH /2)
+#define PLAYER_DISP_Y					(SCREEN_HEIGHT/2 + TEXTURE_HEIGHT_PLAYER)
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -399,17 +399,22 @@ void UpdatePlayer(void)
 					// 弾発射
 					if (GetKeyboardTrigger(DIK_J))
 					{
-						D3DXVECTOR3 pos = g_Player[i].pos;
-						if (g_Player[i].dir == DIR_RIGHT)
+						if (g_Player[i].mp > 0)
 						{
-							pos.x = g_Player[i].pos.x + 20;
-							SetBullet(pos, DIR_RIGHT);		// １発目
+							g_Player[i].mp -= 1;
+							D3DXVECTOR3 pos = g_Player[i].pos;
+							if (g_Player[i].dir == DIR_RIGHT)
+							{
+								pos.x = g_Player[i].pos.x + 20;
+								SetBullet(pos, DIR_RIGHT);		// １発目
+							}
+							if (g_Player[i].dir == DIR_LEFT)
+							{
+								pos.x = g_Player[i].pos.x - 20;
+								SetBullet(pos, DIR_LEFT);		// １発目
+							}
 						}
-						if (g_Player[i].dir == DIR_LEFT)
-						{
-							pos.x = g_Player[i].pos.x - 20;
-							SetBullet(pos, DIR_LEFT);		// １発目
-						}
+						
 					}
 					
 				}

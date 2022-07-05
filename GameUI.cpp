@@ -304,9 +304,9 @@ void DrawGameUI(void)
 		float pw = g_UIWeapon.w;
 		float ph = g_UIWeapon.h;
 
-		float tw = 1.0f / 8;
+		float tw = 1.0f / 8;		// 武器テクスチャーが八つ
 		float th = 1.0f;
-		float tx = tw * 3;
+		float tx = tw * 3;			// 武器テクスチャーの第三
 		float ty = th;
 
 		// １枚のポリゴンの頂点とテクスチャ座標を設定
