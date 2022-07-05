@@ -12,7 +12,8 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define ENEMY_MAX		(1)		// エネミーのMax人数
+#define ENEMY_SNAIL_MAX		(1)						// エネミーのsnailのMax数
+#define	ENEMY_MAX			(ENEMY_SNAIL_MAX)		// エネミーのMax数
 
 enum
 {
@@ -40,6 +41,7 @@ struct ENEMY
 	int				patternAnim;		// アニメーションパターンナンバー
 	int				texNo;				// テクスチャ番号
 	D3DXVECTOR3		move;				// 移動速度
+	
 
 	D3DXVECTOR3		gravity;			// 重力
 	D3DXVECTOR3		vel;				// 飛びの高度

@@ -44,8 +44,8 @@ static char *g_TexturName[TEXTURE_MAX] = {
 };
 
 
-static BOOL		g_Load = FALSE;			// 初期化を行ったかのフラグ
-static ENEMY	g_Enemy[ENEMY_MAX];		// エネミー構造体
+static BOOL		g_Load = FALSE;						// 初期化を行ったかのフラグ
+static ENEMY	g_Enemy_Snail[ENEMY_SNAIL_MAX];		// エネミー構造体
 
 
 //=============================================================================
@@ -82,21 +82,21 @@ HRESULT InitEnemy(void)
 
 
 	// エネミー構造体の初期化
-	for (int i = 0; i < ENEMY_MAX; i++)
+	for (int i = 0; i < ENEMY_SNAIL_MAX; i++)
 	{
-		g_Enemy[i].use = TRUE;
-		g_Enemy[i].pos = D3DXVECTOR3(1090.0f, 800.0f, 0.0f);	// 中心点から表示
-		g_Enemy[i].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_Enemy[i].w   = TEXTURE_WIDTH_ENEMY;
-		g_Enemy[i].h   = TEXTURE_HEIGHT_ENEMY;
-		g_Enemy[i].texNo = ENEMY_SNAIL_TEXTURE_SHOW;
-		g_Enemy[i].dir = DIR_ENEMY_LEFT;
-		g_Enemy[i].mapChipListNum = 0;
+		g_Enemy_Snail[i].use = TRUE;
+		g_Enemy_Snail[i].pos = D3DXVECTOR3(1090.0f, 800.0f, 0.0f);	// 中心点から表示
+		g_Enemy_Snail[i].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_Enemy_Snail[i].w   = TEXTURE_WIDTH_ENEMY;
+		g_Enemy_Snail[i].h   = TEXTURE_HEIGHT_ENEMY;
+		g_Enemy_Snail[i].texNo = ENEMY_SNAIL_TEXTURE_SHOW;
+		g_Enemy_Snail[i].dir = DIR_ENEMY_LEFT;
+		g_Enemy_Snail[i].mapChipListNum = 0;
 
-		g_Enemy[i].countAnim = 0;
-		g_Enemy[i].patternAnim = 0;
+		g_Enemy_Snail[i].countAnim = 0;
+		g_Enemy_Snail[i].patternAnim = 0;
 
-		g_Enemy[i].move = D3DXVECTOR3(2.0f, 0.0f, 0.0f);
+		g_Enemy_Snail[i].move = D3DXVECTOR3(2.0f, 0.0f, 0.0f);
 	}
 	g_Load = TRUE;	// データの初期化を行った
 	return S_OK;
@@ -133,60 +133,60 @@ void UninitEnemy(void)
 void UpdateEnemy(void)
 {
 	int count = 0;
-	for (int i = 0; i < ENEMY_MAX; i++)
+	for (int i = 0; i < ENEMY_SNAIL_MAX; i++)
 	{
-		if (g_Enemy[i].use == TRUE)	// このエネミーが使われている？
+		if (g_Enemy_Snail[i].use == TRUE)	// このエネミーが使われている？
 		{							// Yes
 			// 地形との当たり判定用に座標のバックアップを取っておく
-			D3DXVECTOR3 pos_old = g_Enemy[i].pos;
+			D3DXVECTOR3 pos_old = g_Enemy_Snail[i].pos;
 
 			// アニメーション  
-			g_Enemy[i].countAnim++;
-			if ((g_Enemy[i].countAnim % ANIM_WAIT_ENEMY) == 0)
+			g_Enemy_Snail[i].countAnim++;
+			if ((g_Enemy_Snail[i].countAnim % ANIM_WAIT_ENEMY) == 0)
 			{
 				// パターンの切り替え
-				g_Enemy[i].patternAnim = (g_Enemy[i].patternAnim + 1) % ANIM_PATTERN_NUM_ENEMY;
+				g_Enemy_Snail[i].patternAnim = (g_Enemy_Snail[i].patternAnim + 1) % ANIM_PATTERN_NUM_ENEMY;
 			}
 
 			// playerとmapchipの判定処理
-			if (CheckMapList2(g_Enemy[i], TEXTURE_WIDTH_ENEMY / 4, TEXTURE_HEIGHT_ENEMY / 2) == TRUE)
+			if (CheckMapList2(g_Enemy_Snail[i], TEXTURE_WIDTH_ENEMY / 4, TEXTURE_HEIGHT_ENEMY / 2) == TRUE)
 			{
-				g_Enemy[i].gravity.y = 0;
-				g_Enemy[i].vel.y = 0;
-				g_Enemy[i].mapChipListNum = MapChipListNum(g_Enemy[i], TEXTURE_WIDTH_ENEMY / 4, TEXTURE_HEIGHT_ENEMY / 2);
+				g_Enemy_Snail[i].gravity.y = 0;
+				g_Enemy_Snail[i].vel.y = 0;
+				g_Enemy_Snail[i].mapChipListNum = MapChipListNum(g_Enemy_Snail[i], TEXTURE_WIDTH_ENEMY / 4, TEXTURE_HEIGHT_ENEMY / 2);
 			}
 
-			g_Enemy[i].pos += g_Enemy[i].gravity;
-			g_Enemy[i].gravity.y += 0.2f;
+			g_Enemy_Snail[i].pos += g_Enemy_Snail[i].gravity;
+			g_Enemy_Snail[i].gravity.y += 0.2f;
 
-			if (g_Enemy[i].gravity.y > 30)
+			if (g_Enemy_Snail[i].gravity.y > 30)
 			{
-				g_Enemy[i].gravity.y = 30;
+				g_Enemy_Snail[i].gravity.y = 30;
 			}
 
 			// 移動処理 
 
 			{
-				/*if (g_Enemy[i].dir == DIR_RIGHT)
+				/*if (g_Enemy_Snail[i].dir == DIR_RIGHT)
 				{
-					g_Enemy[i].pos.x += g_Enemy->move.x;
-					g_Enemy[i].texNo = 1;
+					g_Enemy_Snail[i].pos.x += g_Enemy_Snail->move.x;
+					g_Enemy_Snail[i].texNo = 1;
 				}
-				else if (g_Enemy[i].dir == DIR_LEFT)
+				else if (g_Enemy_Snail[i].dir == DIR_LEFT)
 				{
-					g_Enemy[i].pos.x -= g_Enemy->move.x;
-					g_Enemy[i].texNo = 0;
+					g_Enemy_Snail[i].pos.x -= g_Enemy_Snail->move.x;
+					g_Enemy_Snail[i].texNo = 0;
 				}
 
-				if (g_Enemy[i].mapChipListNum == 6)
+				if (g_Enemy_Snail[i].mapChipListNum == 6)
 				{
-					g_Enemy[i].dir = DIR_RIGHT;
-					g_Enemy[i].pos.x += g_Enemy->move.x;
+					g_Enemy_Snail[i].dir = DIR_RIGHT;
+					g_Enemy_Snail[i].pos.x += g_Enemy_Snail->move.x;
 				}
-				else if (g_Enemy[i].mapChipListNum == 7)
+				else if (g_Enemy_Snail[i].mapChipListNum == 7)
 				{
-					g_Enemy[i].dir = DIR_LEFT;
-					g_Enemy[i].pos.x -= g_Enemy->move.x;
+					g_Enemy_Snail[i].dir = DIR_LEFT;
+					g_Enemy_Snail[i].pos.x -= g_Enemy_Snail->move.x;
 				}*/
 
 
@@ -195,12 +195,12 @@ void UpdateEnemy(void)
 					PLAYER *player = GetPlayer();
 
 					// エネミーの数分当たり判定を行う
-					for (int j = 0; j < ENEMY_MAX; j++)
+					for (int j = 0; j < ENEMY_SNAIL_MAX; j++)
 					{
 						// 生きてるエネミーと当たり判定をする
 						if (player[j].use == TRUE && player->noDamageMod == FALSE)
 						{
-							BOOL ans = CollisionBB(g_Enemy[i].pos, g_Enemy[i].w -10.0f, g_Enemy[i].h,
+							BOOL ans = CollisionBB(g_Enemy_Snail[i].pos, g_Enemy_Snail[i].w -10.0f, g_Enemy_Snail[i].h,
 								player[j].pos, player[j].w -10.0f, player[j].h);
 							// 当たっている？
 							if (ans == TRUE)
@@ -210,7 +210,7 @@ void UpdateEnemy(void)
 								player->isTakeDamage = TRUE;
 								player->countAnim = 0;
 								player->patternAnim = 0;
-								//g_Enemy[i].use = FALSE;
+								//g_Enemy_Snail[i].use = FALSE;
 								AddScore(-500);
 								PlaySound(SOUND_LABEL_SE_defend000);
 							}
@@ -222,24 +222,24 @@ void UpdateEnemy(void)
 				// MAP外チェック
 				MAP *map = GetMap();
 
-				if (g_Enemy[i].pos.x < 0.0f)
+				if (g_Enemy_Snail[i].pos.x < 0.0f)
 				{
-					g_Enemy[i].pos.x = 0.0f;
+					g_Enemy_Snail[i].pos.x = 0.0f;
 				}
 
-				if (g_Enemy[i].pos.x > map->w)
+				if (g_Enemy_Snail[i].pos.x > map->w)
 				{
-					g_Enemy[i].pos.x = map->w;
+					g_Enemy_Snail[i].pos.x = map->w;
 				}
 
-				if (g_Enemy[i].pos.y < 0.0f)
+				if (g_Enemy_Snail[i].pos.y < 0.0f)
 				{
-					g_Enemy[i].pos.y = 0.0f;
+					g_Enemy_Snail[i].pos.y = 0.0f;
 				}
 
-				if (g_Enemy[i].pos.y > map->h)
+				if (g_Enemy_Snail[i].pos.y > map->h)
 				{
-					g_Enemy[i].pos.y = map->h;
+					g_Enemy_Snail[i].pos.y = map->h;
 				}
 
 
@@ -250,30 +250,30 @@ void UpdateEnemy(void)
 		{
 			count++;
 		}
-		//if (count == ENEMY_MAX)
+		//if (count == ENEMY_SNAIL_MAX)
 		//{
-		//	for (int i = 0; i < ENEMY_MAX; i++)
+		//	for (int i = 0; i < ENEMY_SNAIL_MAX; i++)
 		//	{
-		//		g_Enemy[i].use = TRUE;
-		//		g_Enemy[i].pos = D3DXVECTOR3(i + rand() % SCREEN_WIDTH, 0.0f, 0.0f);	// 中心点から表示
-		//		g_Enemy[i].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		//		g_Enemy[i].w = TEXTURE_WIDTH_ENEMY;
-		//		g_Enemy[i].h = TEXTURE_HEIGHT_ENEMY;
-		//		g_Enemy[i].texNo = 0;
-		//		g_Enemy[i].dir = DIR_LEFT;
-		//		g_Enemy[i].mapChipListNum = 0;
+		//		g_Enemy_Snail[i].use = TRUE;
+		//		g_Enemy_Snail[i].pos = D3DXVECTOR3(i + rand() % SCREEN_WIDTH, 0.0f, 0.0f);	// 中心点から表示
+		//		g_Enemy_Snail[i].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		//		g_Enemy_Snail[i].w = TEXTURE_WIDTH_ENEMY;
+		//		g_Enemy_Snail[i].h = TEXTURE_HEIGHT_ENEMY;
+		//		g_Enemy_Snail[i].texNo = 0;
+		//		g_Enemy_Snail[i].dir = DIR_LEFT;
+		//		g_Enemy_Snail[i].mapChipListNum = 0;
 
-		//		g_Enemy[i].countAnim = 0;
-		//		g_Enemy[i].patternAnim = 0;
+		//		g_Enemy_Snail[i].countAnim = 0;
+		//		g_Enemy_Snail[i].patternAnim = 0;
 
-		//		g_Enemy[i].move = D3DXVECTOR3(2.0f, 0.0f, 0.0f);
+		//		g_Enemy_Snail[i].move = D3DXVECTOR3(2.0f, 0.0f, 0.0f);
 		//	}
 		//}
 			
 
 #ifdef _DEBUG
 		// デバッグ表示
-		PrintDebugProc("Enemy No%d  X:%f Y:%f texno:%d\n", i, g_Enemy[i].pos.x, g_Enemy[i].pos.y,g_Enemy[i].mapChipListNum);
+		PrintDebugProc("Enemy No%d  X:%f Y:%f texno:%d\n", i, g_Enemy_Snail[i].pos.x, g_Enemy_Snail[i].pos.y,g_Enemy_Snail[i].mapChipListNum);
 		PrintDebugProc("EnemyNum %d\n", count);
 #endif
 
@@ -307,29 +307,29 @@ void DrawEnemy(void)
 
 	MAP *map = GetMap();
 
-	for (int i = 0; i < ENEMY_MAX; i++)
+	for (int i = 0; i < ENEMY_SNAIL_MAX; i++)
 	{
-		if (g_Enemy[i].use == TRUE)		// このエネミーが使われている？
+		if (g_Enemy_Snail[i].use == TRUE)		// このエネミーが使われている？
 		{								// Yes
 			// テクスチャ設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[g_Enemy[i].texNo]);
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[g_Enemy_Snail[i].texNo]);
 
 			//エネミーの位置やテクスチャー座標を反映
-			float px = g_Enemy[i].pos.x - map->pos.x;	// エネミーの表示位置X
-			float py = g_Enemy[i].pos.y - map->pos.y;	// エネミーの表示位置Y
-			float pw = g_Enemy[i].w;					// エネミーの表示幅
-			float ph = g_Enemy[i].h;					// エネミーの表示高さ
+			float px = g_Enemy_Snail[i].pos.x - map->pos.x;	// エネミーの表示位置X
+			float py = g_Enemy_Snail[i].pos.y - map->pos.y;	// エネミーの表示位置Y
+			float pw = g_Enemy_Snail[i].w;					// エネミーの表示幅
+			float ph = g_Enemy_Snail[i].h;					// エネミーの表示高さ
 
 			// アニメーション用
-			float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X_ENEMY * g_Enemy[i].dir;	// テクスチャの幅
+			float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X_ENEMY * g_Enemy_Snail[i].dir;	// テクスチャの幅
 			float th = 1.0f / TEXTURE_PATTERN_DIVIDE_Y_ENEMY;					// テクスチャの高さ
-			float tx = (float)(g_Enemy[i].patternAnim % TEXTURE_PATTERN_DIVIDE_X_ENEMY) * tw * g_Enemy[i].dir;	// テクスチャの左上X座標
-			float ty = (float)(g_Enemy[i].patternAnim / TEXTURE_PATTERN_DIVIDE_X_ENEMY) * th;					// テクスチャの左上Y座標
+			float tx = (float)(g_Enemy_Snail[i].patternAnim % TEXTURE_PATTERN_DIVIDE_X_ENEMY) * tw * g_Enemy_Snail[i].dir;	// テクスチャの左上X座標
+			float ty = (float)(g_Enemy_Snail[i].patternAnim / TEXTURE_PATTERN_DIVIDE_X_ENEMY) * th;					// テクスチャの左上Y座標
 
 			// １枚のポリゴンの頂点とテクスチャ座標を設定
 			SetSpriteColorRotation(g_VertexBuffer, px, py, pw, ph, tx, ty, tw, th,
 				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
-				g_Enemy[i].rot.z);
+				g_Enemy_Snail[i].rot.z);
 
 			// ポリゴン描画
 			GetDeviceContext()->Draw(4, 0);
@@ -344,7 +344,7 @@ void DrawEnemy(void)
 ENEMY *GetEnemy(void)
 {
 
-	return &g_Enemy[0];
+	return &g_Enemy_Snail[0];
 }
 
 
