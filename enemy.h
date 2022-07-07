@@ -15,6 +15,8 @@
 #define ENEMY_SNAIL_MAX		(1)						// エネミーのsnailのMax数
 #define	ENEMY_MAX			(ENEMY_SNAIL_MAX)		// エネミーのMax数
 
+#define ENEMY_SNAIL_HP_MAX	(1)
+
 enum
 {
 	DIR_ENEMY_LEFT  =  1,
@@ -41,11 +43,15 @@ struct ENEMY
 	int				patternAnim;		// アニメーションパターンナンバー
 	int				texNo;				// テクスチャ番号
 	D3DXVECTOR3		move;				// 移動速度
-	
+	BOOL			isShow;				// エネミーの登場アニメ
+	BOOL			isWalk;				// エネミーの移動アニメ
+	BOOL			isDead;				// エネミーの死亡アニメ
 
 	D3DXVECTOR3		gravity;			// 重力
 	D3DXVECTOR3		vel;				// 飛びの高度
 	int				dir;				// 向き（0:右 1:左）
+
+	int				hp;					// 
 
 	int				mapChipListNum;		// 当たったmapchipのtexnoを記録する
 };

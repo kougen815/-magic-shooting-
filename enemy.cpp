@@ -16,14 +16,24 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define TEXTURE_WIDTH_ENEMY				(96)																// キャラサイズ
-#define TEXTURE_HEIGHT_ENEMY			(64)																// 
-#define TEXTURE_MAX						(2)																	// テクスチャの数
+#define TEXTURE_MAX							(2)																	// テクスチャの数
 
-#define TEXTURE_PATTERN_DIVIDE_X_ENEMY	(8)																	// アニメパターンのテクスチャ内分割数（X)
-#define TEXTURE_PATTERN_DIVIDE_Y_ENEMY	(1)																	// アニメパターンのテクスチャ内分割数（Y)
-#define ANIM_PATTERN_NUM_ENEMY			(TEXTURE_PATTERN_DIVIDE_X_ENEMY*TEXTURE_PATTERN_DIVIDE_Y_ENEMY)		// アニメーションパターン数
-#define ANIM_WAIT_ENEMY					(6)		// アニメーションの切り替わるWait値
+#define TEXTURE_WIDTH_SNAIL					(96)																// キャラサイズ
+#define TEXTURE_HEIGHT_SNAIL				(64)																// 
+
+
+
+// Snailのアニメ
+// 登場アニメ
+#define TEXTURE_PATTERN_DIVIDE_X_SNAIL_SHOW	(8)																				// アニメパターンのテクスチャ内分割数（X)
+#define TEXTURE_PATTERN_DIVIDE_Y_SNAIL_SHOW	(1)																				// アニメパターンのテクスチャ内分割数（Y)
+#define ANIM_PATTERN_NUM_SNAIL_SHOW			(TEXTURE_PATTERN_DIVIDE_X_SNAIL_SHOW * TEXTURE_PATTERN_DIVIDE_Y_SNAIL_SHOW)		// アニメーションパターン数
+#define ANIM_WAIT_SNAIL_SHOW				(6)																				// アニメーションの切り替わるWait値
+// 移動アニメ
+#define TEXTURE_PATTERN_DIVIDE_X_SNAIL_WALK	(8)																				// アニメパターンのテクスチャ内分割数（X)
+#define TEXTURE_PATTERN_DIVIDE_Y_SNAIL_WALK	(1)																				// アニメパターンのテクスチャ内分割数（Y)
+#define ANIM_PATTERN_NUM_SNAIL_WALK			(TEXTURE_PATTERN_DIVIDE_X_SNAIL_WALK * TEXTURE_PATTERN_DIVIDE_Y_SNAIL_WALK)		// アニメーションパターン数
+#define ANIM_WAIT_SNAIL_WALK				(6)																				// アニメーションの切り替わるWait値
 
 
 
@@ -84,17 +94,23 @@ HRESULT InitEnemy(void)
 	// エネミー構造体の初期化
 	for (int i = 0; i < ENEMY_SNAIL_MAX; i++)
 	{
-		g_Enemy_Snail[i].use = TRUE;
-		g_Enemy_Snail[i].pos = D3DXVECTOR3(1090.0f, 800.0f, 0.0f);	// 中心点から表示
-		g_Enemy_Snail[i].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_Enemy_Snail[i].w   = TEXTURE_WIDTH_ENEMY;
-		g_Enemy_Snail[i].h   = TEXTURE_HEIGHT_ENEMY;
-		g_Enemy_Snail[i].texNo = ENEMY_SNAIL_TEXTURE_SHOW;
-		g_Enemy_Snail[i].dir = DIR_ENEMY_LEFT;
+		g_Enemy_Snail[i].use	= TRUE;
+		g_Enemy_Snail[i].pos	= D3DXVECTOR3(1090.0f, 800.0f, 0.0f);	// 中心点から表示
+		g_Enemy_Snail[i].rot	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_Enemy_Snail[i].w		= TEXTURE_WIDTH_SNAIL;
+		g_Enemy_Snail[i].h		= TEXTURE_HEIGHT_SNAIL;
+		g_Enemy_Snail[i].texNo	= ENEMY_SNAIL_TEXTURE_SHOW;
+		g_Enemy_Snail[i].dir	= DIR_ENEMY_LEFT;
+
 		g_Enemy_Snail[i].mapChipListNum = 0;
 
+		g_Enemy_Snail[i].isShow = TRUE;
+		g_Enemy_Snail[i].isWalk = FALSE;
+		g_Enemy_Snail[i].isDead = FALSE;
 		g_Enemy_Snail[i].countAnim = 0;
 		g_Enemy_Snail[i].patternAnim = 0;
+
+		g_Enemy_Snail[i].hp = ENEMY_SNAIL_HP_MAX;
 
 		g_Enemy_Snail[i].move = D3DXVECTOR3(2.0f, 0.0f, 0.0f);
 	}
@@ -135,25 +151,58 @@ void UpdateEnemy(void)
 	int count = 0;
 	for (int i = 0; i < ENEMY_SNAIL_MAX; i++)
 	{
-		if (g_Enemy_Snail[i].use == TRUE)	// このエネミーが使われている？
-		{							// Yes
+		if (g_Enemy_Snail[i].hp == 0)
+		{
+			g_Enemy_Snail[i].use = FALSE;
+		}
+
+		// 生きてるプレイヤーだけ処理をする
+		if (g_Enemy_Snail[i].use == TRUE)	
+		{
 			// 地形との当たり判定用に座標のバックアップを取っておく
 			D3DXVECTOR3 pos_old = g_Enemy_Snail[i].pos;
 
 			// アニメーション  
-			g_Enemy_Snail[i].countAnim++;
-			if ((g_Enemy_Snail[i].countAnim % ANIM_WAIT_ENEMY) == 0)
 			{
-				// パターンの切り替え
-				g_Enemy_Snail[i].patternAnim = (g_Enemy_Snail[i].patternAnim + 1) % ANIM_PATTERN_NUM_ENEMY;
-			}
+				// 登場アニメ
+				if (g_Enemy_Snail[i].isShow == TRUE)
+				{
+					g_Enemy_Snail[i].countAnim += 1;
 
+					if (g_Enemy_Snail[i].countAnim > ANIM_WAIT_SNAIL_SHOW)
+					{
+						g_Enemy_Snail[i].countAnim = 0;
+						// パターンの切り替え
+						g_Enemy_Snail[i].patternAnim = (g_Enemy_Snail[i].patternAnim + 1) % ANIM_PATTERN_NUM_SNAIL_SHOW;
+
+						if (g_Enemy_Snail[i].patternAnim == ANIM_PATTERN_NUM_SNAIL_SHOW - 1)
+						{
+							g_Enemy_Snail[i].isShow = FALSE;
+							g_Enemy_Snail[i].isWalk = TRUE;
+						}
+					}
+				}
+
+				// 移動アニメ
+				if (g_Enemy_Snail[i].isWalk == TRUE)
+				{
+					g_Enemy_Snail[i].countAnim += 1;
+
+					if (g_Enemy_Snail[i].countAnim > ANIM_WAIT_SNAIL_WALK)
+					{
+						g_Enemy_Snail[i].countAnim = 0;
+						// パターンの切り替え
+						g_Enemy_Snail[i].patternAnim = (g_Enemy_Snail[i].patternAnim + 1) % ANIM_PATTERN_NUM_SNAIL_WALK;
+					}
+				}
+			}
+			
 			// playerとmapchipの判定処理
-			if (CheckMapList2(g_Enemy_Snail[i], TEXTURE_WIDTH_ENEMY / 4, TEXTURE_HEIGHT_ENEMY / 2) == TRUE)
+			if (CheckMapList2(g_Enemy_Snail[i], TEXTURE_WIDTH_SNAIL / 4, TEXTURE_HEIGHT_SNAIL / 2) == TRUE)
 			{
 				g_Enemy_Snail[i].gravity.y = 0;
 				g_Enemy_Snail[i].vel.y = 0;
-				g_Enemy_Snail[i].mapChipListNum = MapChipListNum(g_Enemy_Snail[i], TEXTURE_WIDTH_ENEMY / 4, TEXTURE_HEIGHT_ENEMY / 2);
+				g_Enemy_Snail[i].mapChipListNum = MapChipListNum(g_Enemy_Snail[i], TEXTURE_WIDTH_SNAIL / 4, TEXTURE_HEIGHT_SNAIL / 2);
 			}
 
 			g_Enemy_Snail[i].pos += g_Enemy_Snail[i].gravity;
@@ -165,8 +214,11 @@ void UpdateEnemy(void)
 			}
 
 			// 移動処理 
-
 			{
+				if (g_Enemy_Snail[i].isWalk == TRUE)
+				{
+					g_Enemy_Snail[i].texNo = ENEMY_SNAIL_TEXTURE_WALK;
+				}
 				/*if (g_Enemy_Snail[i].dir == DIR_RIGHT)
 				{
 					g_Enemy_Snail[i].pos.x += g_Enemy_Snail->move.x;
@@ -310,29 +362,60 @@ void DrawEnemy(void)
 	for (int i = 0; i < ENEMY_SNAIL_MAX; i++)
 	{
 		if (g_Enemy_Snail[i].use == TRUE)		// このエネミーが使われている？
-		{								// Yes
-			// テクスチャ設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[g_Enemy_Snail[i].texNo]);
+		{										// Yes
 
-			//エネミーの位置やテクスチャー座標を反映
-			float px = g_Enemy_Snail[i].pos.x - map->pos.x;	// エネミーの表示位置X
-			float py = g_Enemy_Snail[i].pos.y - map->pos.y;	// エネミーの表示位置Y
-			float pw = g_Enemy_Snail[i].w;					// エネミーの表示幅
-			float ph = g_Enemy_Snail[i].h;					// エネミーの表示高さ
+			if (g_Enemy_Snail[i].isShow == TRUE)
+			{
+				// テクスチャ設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[g_Enemy_Snail[i].texNo]);
 
-			// アニメーション用
-			float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X_ENEMY * g_Enemy_Snail[i].dir;	// テクスチャの幅
-			float th = 1.0f / TEXTURE_PATTERN_DIVIDE_Y_ENEMY;					// テクスチャの高さ
-			float tx = (float)(g_Enemy_Snail[i].patternAnim % TEXTURE_PATTERN_DIVIDE_X_ENEMY) * tw * g_Enemy_Snail[i].dir;	// テクスチャの左上X座標
-			float ty = (float)(g_Enemy_Snail[i].patternAnim / TEXTURE_PATTERN_DIVIDE_X_ENEMY) * th;					// テクスチャの左上Y座標
+				//エネミーの位置やテクスチャー座標を反映
+				float px = g_Enemy_Snail[i].pos.x - map->pos.x;	// エネミーの表示位置X
+				float py = g_Enemy_Snail[i].pos.y - map->pos.y;	// エネミーの表示位置Y
+				float pw = g_Enemy_Snail[i].w;					// エネミーの表示幅
+				float ph = g_Enemy_Snail[i].h;					// エネミーの表示高さ
 
-			// １枚のポリゴンの頂点とテクスチャ座標を設定
-			SetSpriteColorRotation(g_VertexBuffer, px, py, pw, ph, tx, ty, tw, th,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
-				g_Enemy_Snail[i].rot.z);
+				// アニメーション用
+				float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X_SNAIL_SHOW * g_Enemy_Snail[i].dir;	// テクスチャの幅
+				float th = 1.0f / TEXTURE_PATTERN_DIVIDE_Y_SNAIL_SHOW;					// テクスチャの高さ
+				float tx = (float)(g_Enemy_Snail[i].patternAnim % TEXTURE_PATTERN_DIVIDE_X_SNAIL_SHOW) * tw * g_Enemy_Snail[i].dir;	// テクスチャの左上X座標
+				float ty = (float)(g_Enemy_Snail[i].patternAnim / TEXTURE_PATTERN_DIVIDE_X_SNAIL_SHOW) * th;					// テクスチャの左上Y座標
 
-			// ポリゴン描画
-			GetDeviceContext()->Draw(4, 0);
+				// １枚のポリゴンの頂点とテクスチャ座標を設定
+				SetSpriteColorRotation(g_VertexBuffer, px, py, pw, ph, tx, ty, tw, th,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+					g_Enemy_Snail[i].rot.z);
+
+				// ポリゴン描画
+				GetDeviceContext()->Draw(4, 0);
+			}
+
+			if (g_Enemy_Snail[i].isWalk == TRUE)
+			{
+				// テクスチャ設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[g_Enemy_Snail[i].texNo]);
+
+				//エネミーの位置やテクスチャー座標を反映
+				float px = g_Enemy_Snail[i].pos.x - map->pos.x;	// エネミーの表示位置X
+				float py = g_Enemy_Snail[i].pos.y - map->pos.y;	// エネミーの表示位置Y
+				float pw = g_Enemy_Snail[i].w;					// エネミーの表示幅
+				float ph = g_Enemy_Snail[i].h;					// エネミーの表示高さ
+
+				// アニメーション用
+				float tw = 1.0f / TEXTURE_PATTERN_DIVIDE_X_SNAIL_WALK * g_Enemy_Snail[i].dir;	// テクスチャの幅
+				float th = 1.0f / TEXTURE_PATTERN_DIVIDE_Y_SNAIL_WALK;					// テクスチャの高さ
+				float tx = (float)(g_Enemy_Snail[i].patternAnim % TEXTURE_PATTERN_DIVIDE_X_SNAIL_WALK) * tw * g_Enemy_Snail[i].dir;	// テクスチャの左上X座標
+				float ty = (float)(g_Enemy_Snail[i].patternAnim / TEXTURE_PATTERN_DIVIDE_X_SNAIL_WALK) * th;					// テクスチャの左上Y座標
+
+				// １枚のポリゴンの頂点とテクスチャ座標を設定
+				SetSpriteColorRotation(g_VertexBuffer, px, py, pw, ph, tx, ty, tw, th,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+					g_Enemy_Snail[i].rot.z);
+
+				// ポリゴン描画
+				GetDeviceContext()->Draw(4, 0);
+			}
+			
 		}
 	}
 }
